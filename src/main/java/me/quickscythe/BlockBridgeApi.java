@@ -29,14 +29,16 @@ public class BlockBridgeApi {
 
     private static void checkConfigDefaults() {
 
-        setDefault("command_prefix", "!");
-        setDefault("cmd_channel", 0L);
-        setDefault("log_channel", 0L);
         setDefault("api_entry_point", "/api");
         setDefault("app_entry_point", "/app");
         setDefault("web_port", 8585);
         setDefault("token_valid_time", 24);
         setDefault("allow", new JSONArray());
+    }
+
+    public static void allow(String ip){
+        CONFIG.getJSONArray("allow").put(ip);
+        saveConfig();
     }
 
     private static void setDefault(String key, Object value) {
