@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'me.quickscythe'
+version = project.api_version
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${junit_version}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation("com.sparkjava:spark-core:$spark_version")
+    implementation("ch.qos.logback:logback-classic:$logback_version")
+}
+
+test {
+    useJUnitPlatform()
+}
+publishing {
+
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+        }
+    }
+    repositories {
+        maven {
+            name = 'localRepo'
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
+}
