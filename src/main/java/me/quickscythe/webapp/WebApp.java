@@ -3,8 +3,9 @@ package me.quickscythe.webapp;
 import json2.JSONArray;
 import json2.JSONObject;
 import me.quickscythe.BlockBridgeApi;
-import me.quickscythe.webapp.token.Token;
-import me.quickscythe.webapp.token.TokenManager;
+import me.quickscythe.utils.listeners.Listener;
+import me.quickscythe.utils.token.Token;
+import me.quickscythe.utils.token.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import static spark.Spark.get;
 import static spark.Spark.port;
 
 public class WebApp {
+
+    private List<Listener> listeners = new ArrayList<>();
 
 
 
@@ -43,11 +46,21 @@ public class WebApp {
             if (action.equalsIgnoreCase("status")) {
                 if (a == null)
                     return Feedback.Errors.json("No status provided");
+                for(Listener listener : getListeners())
+                    if(listener instanceof Listener.StatusListener)
+                        ((Listener.StatusListener) listener).onStatusChange(a, b, c);
             }
             if (action.equalsIgnoreCase("join")) {
+                for(Listener listener : getListeners())
+                    if(listener instanceof Listener.JoinListener)
+                        ((Listener.JoinListener) listener).onJoin(a, b, c);
+
 
             }
             if (action.equalsIgnoreCase("leave")) {
+                for(Listener listener : getListeners())
+                    if(listener instanceof Listener.LeaveListener)
+                        ((Listener.LeaveListener) listener).onLeave(a, b, c);
 
             }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));
@@ -73,9 +86,16 @@ public class WebApp {
             return feedback;
         });
 
-        BlockBridgeApi.getLogger().info("WebApp started on port " + WEB_PORT());
+        BlockBridgeApi.getLogger().info("WebApp started on port {}", WEB_PORT());
     }
 
+    public void addListener(Listener listener){
+        listeners.add(listener);
+    }
+
+    public List<Listener> getListeners() {
+        return listeners;
+    }
 
     public void runTokenCheck() {
         List<String> remove_tokens = new ArrayList<>();

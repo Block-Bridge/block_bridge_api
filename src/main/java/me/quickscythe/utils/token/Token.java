@@ -1,4 +1,4 @@
-package me.quickscythe.webapp.token;
+package me.quickscythe.utils.token;
 
 import me.quickscythe.BlockBridgeApi;
 

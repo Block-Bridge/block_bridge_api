@@ -1,4 +1,4 @@
-package me.quickscythe.webapp.token;
+package me.quickscythe.utils.token;
 
 import json2.JSONArray;
 import json2.JSONObject;
