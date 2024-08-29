@@ -52,11 +52,11 @@ public class BlockBridgeApi {
     private static JSONObject loadConfig() {
         StringBuilder stringBuilder = new StringBuilder();
         try {
-            File config = new File("config.json");
+            File config = new File("webapp.json");
             if (!config.exists()) if (config.createNewFile()) {
                 logger.info("Config file generated.");
             }
-            BufferedReader reader = new BufferedReader(new FileReader("config.json"));
+            BufferedReader reader = new BufferedReader(new FileReader("webapp.json"));
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -75,7 +75,7 @@ public class BlockBridgeApi {
 
     public static void saveConfig() {
         try {
-            FileWriter f2 = new FileWriter("config.json", false);
+            FileWriter f2 = new FileWriter("webapp.json", false);
             f2.write(CONFIG.toString(2));
             f2.close();
         } catch (IOException e) {
