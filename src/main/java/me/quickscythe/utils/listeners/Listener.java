@@ -2,14 +2,14 @@ package me.quickscythe.utils.listeners;
 
 public interface Listener {
 
-    interface JoinListener {
+    interface JoinListener extends Listener {
         void onJoin(String a, String b, String c);
     }
-    interface LeaveListener {
+    interface LeaveListener extends Listener {
         void onLeave(String a, String b, String c);
     }
 
-    interface StatusListener {
+    interface StatusListener extends Listener {
         void onStatusChange(String a, String b, String c);
     }
 }
