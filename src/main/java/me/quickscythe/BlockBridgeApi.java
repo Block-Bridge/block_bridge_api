@@ -108,6 +108,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
 
         setDefault("api_entry_point", "/api");
         setDefault("app_entry_point", "/app");
+        setDefault("api_url", "http://localhost:8585");
         setDefault("web_port", 8585);
         setDefault("token_valid_time", 24);
         setDefault("allow", new JSONArray());
