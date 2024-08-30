@@ -1,6 +1,9 @@
 package me.quickscythe.utils.listeners;
 
+import me.quickscythe.api.BotPlugin;
+
 public interface Listener {
+
 
     interface JoinListener extends Listener {
         void onJoin(String a, String b, String c);

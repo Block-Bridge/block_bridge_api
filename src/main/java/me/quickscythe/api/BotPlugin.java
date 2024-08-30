@@ -10,7 +10,11 @@ public class BotPlugin {
 
 
     public void enable(){
-        System.out.println(name + " enabled");
+        logger.info("{} enabled", name);
+    }
+
+    public void disable(){
+        logger.info("{} disabled", name);
     }
 
     public String getName() {

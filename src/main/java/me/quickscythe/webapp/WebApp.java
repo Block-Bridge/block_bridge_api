@@ -4,19 +4,22 @@ import json2.JSONArray;
 import json2.JSONObject;
 import me.quickscythe.Api;
 import me.quickscythe.BlockBridgeApi;
+import me.quickscythe.api.BotPlugin;
 import me.quickscythe.utils.listeners.Listener;
 import me.quickscythe.utils.token.Token;
 import me.quickscythe.utils.token.TokenManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
 
 public class WebApp {
 
-    private List<Listener> listeners = new ArrayList<>();
+    private HashMap<Listener, BotPlugin> listeners = new HashMap<>();
     private final Api bba;
     
     public WebApp(Api bba) {
@@ -90,12 +93,28 @@ public class WebApp {
         bba.getLogger().info("WebApp started on port {}", bba.WEB_PORT());
     }
 
-    public void addListener(Listener listener){
-        listeners.add(listener);
+    public void addListener(BotPlugin plugin, Listener listener){
+        listeners.put(listener,plugin);
     }
 
-    public List<Listener> getListeners() {
-        return listeners;
+    public Set<Listener> getListeners() {
+        return listeners.keySet();
+    }
+
+    public void removeListener(Listener listener){
+        listeners.remove(listener);
+    }
+
+    public void removeListeners(BotPlugin plugin){
+        List<Listener> remove = new ArrayList<>();
+        for(Listener listener : listeners.keySet()){
+            if(listeners.get(listener).equals(plugin)){
+                remove.add(listener);
+            }
+        }
+        for(Listener listener : remove){
+            removeListener(listener);
+        }
     }
 
     public void runTokenCheck() {
