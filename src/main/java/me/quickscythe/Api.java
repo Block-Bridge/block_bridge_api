@@ -14,10 +14,8 @@ public interface Api {
     JSONObject getData(String path, boolean validate);
 
     void allow(String ip);
-    void saveConfig();
     boolean isDebug();
     WebApp getWebApp();
-    JSONObject getConfig();
     Logger getLogger();
     TokenManager getTokenManager();
 

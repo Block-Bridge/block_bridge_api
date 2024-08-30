@@ -11,19 +11,19 @@ import java.util.*;
 public class TokenManager {
 
     private final Map<String, Token> TOKENS = new HashMap<>();
-    private final Api bba;
+    private final BlockBridgeApi bba;
 
-    public TokenManager(Api bba) {
+    public TokenManager(BlockBridgeApi bba) {
         this.bba = bba;
     }
 
     public String requestNewToken(String ip) {
-        if (!bba.getConfig().has("allow")) {
-            bba.getConfig().put("allow", new JSONArray());
+        if (!bba.get().has("allow")) {
+            bba.get().put("allow", new JSONArray());
         }
         bba.getLogger().info("Requesting token for {}", ip);
         boolean allowed = false;
-        JSONObject data = bba.getConfig();
+        JSONObject data = bba.get();
         for (int i = 0; i != data.getJSONArray("allow").length(); i++) {
             if (data.getJSONArray("allow").getString(i).equals(ip)) {
                 allowed = true;
