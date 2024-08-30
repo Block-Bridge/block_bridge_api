@@ -18,12 +18,12 @@ public class TokenManager {
     }
 
     public String requestNewToken(String ip) {
-        if (!bba.get().has("allow")) {
-            bba.get().put("allow", new JSONArray());
+        if (!bba.getConfig().getData().has("allow")) {
+            bba.getConfig().getData().put("allow", new JSONArray());
         }
         bba.getLogger().info("Requesting token for {}", ip);
         boolean allowed = false;
-        JSONObject data = bba.get();
+        JSONObject data = bba.getConfig().getData();
         for (int i = 0; i != data.getJSONArray("allow").length(); i++) {
             if (data.getJSONArray("allow").getString(i).equals(ip)) {
                 allowed = true;

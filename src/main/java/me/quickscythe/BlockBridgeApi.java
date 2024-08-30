@@ -3,7 +3,7 @@ package me.quickscythe;
 import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
-import me.quickscythe.api.Config;
+import me.quickscythe.api.config.ConfigClass;
 import me.quickscythe.utils.token.TokenManager;
 import me.quickscythe.webapp.WebApp;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
 
-public class BlockBridgeApi extends Config implements Api  {
+public class BlockBridgeApi extends ConfigClass implements Api  {
 
 
     private final Logger logger = LoggerFactory.getLogger(BlockBridgeApi.class);
@@ -25,7 +25,7 @@ public class BlockBridgeApi extends Config implements Api  {
     private String token = null;
 
     public BlockBridgeApi() {
-        super("webapp.json");
+        super(new BlockBridgePlugin(), "webapp.json");
     }
 
     @Override
@@ -36,9 +36,8 @@ public class BlockBridgeApi extends Config implements Api  {
 
 
     public void init() {
-        load();
         checkConfigDefaults();
-        save();
+        getConfig().save();
         WEB_APP = new WebApp(this);
     }
 
@@ -82,27 +81,27 @@ public class BlockBridgeApi extends Config implements Api  {
 
     @Override
     public String URL() {
-        return get().getString("api_url");
+        return getConfig().getData().getString("api_url");
     }
 
     @Override
     public String APP_ENTRY() {
-        return get().getString("app_entry_point");
+        return getConfig().getData().getString("app_entry_point");
     }
 
     @Override
     public String API_ENTRY() {
-        return get().getString("api_entry_point");
+        return getConfig().getData().getString("api_entry_point");
     }
 
     @Override
     public String APP_VERSION() {
-        return get().getString("app_version");
+        return getConfig().getData().getString("app_version");
     }
 
     @Override
     public int WEB_PORT() {
-        return get().getInt("web_port");
+        return getConfig().getData().getInt("web_port");
     }
 
     private void checkConfigDefaults() {
@@ -116,8 +115,8 @@ public class BlockBridgeApi extends Config implements Api  {
 
     @Override
     public void allow(String ip) {
-        get().getJSONArray("allow").put(ip);
-        save();
+        getConfig().getData().getJSONArray("allow").put(ip);
+        getConfig().save();
     }
 
     @Override
@@ -134,7 +133,7 @@ public class BlockBridgeApi extends Config implements Api  {
 
     @Override
     public int TOKEN_VALID_TIME() {
-        return get().getInt("token_valid_time");
+        return getConfig().getData().getInt("token_valid_time");
     }
 
     @Override
