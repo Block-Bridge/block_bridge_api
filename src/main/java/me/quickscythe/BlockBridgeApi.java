@@ -25,7 +25,7 @@ public class BlockBridgeApi extends ConfigClass implements Api  {
     private String token = null;
 
     public BlockBridgeApi() {
-        super(new BlockBridgePlugin(), "webapp.json");
+        super(new BlockBridgePlugin(), "webapp");
     }
 
     @Override
