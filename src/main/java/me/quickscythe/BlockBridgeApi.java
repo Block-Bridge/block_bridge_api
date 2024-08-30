@@ -9,19 +9,19 @@ import me.quickscythe.webapp.WebApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
 
-public class BlockBridgeApi extends ConfigClass implements Api  {
+public class BlockBridgeApi extends ConfigClass implements Api {
 
 
     private final Logger logger = LoggerFactory.getLogger(BlockBridgeApi.class);
     private final TokenManager tokenManager = new TokenManager(this);
     private boolean DEBUG = false;
 
-    private WebApp WEB_APP;
+    private WebApp WEB_APP = null;
     private String token = null;
 
     public BlockBridgeApi() {
@@ -34,11 +34,11 @@ public class BlockBridgeApi extends ConfigClass implements Api  {
     }
 
 
-
-    public void init() {
+    public void init(boolean webapp) {
         checkConfigDefaults();
         getConfig().save();
-        WEB_APP = new WebApp(this);
+        if (webapp)
+            WEB_APP = new WebApp(this);
     }
 
     @Override
@@ -128,7 +128,6 @@ public class BlockBridgeApi extends ConfigClass implements Api  {
     public WebApp getWebApp() {
         return WEB_APP;
     }
-
 
 
     @Override
