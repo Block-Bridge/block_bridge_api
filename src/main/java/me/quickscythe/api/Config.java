@@ -43,7 +43,7 @@ public class Config {
         setDefault(key, value, CONFIG);
     }
 
-    private void setDefault(String key, Object value, JSONObject config) {
+    public void setDefault(String key, Object value, JSONObject config) {
         if (!config.has(key)) config.put(key, value);
     }
     public JSONObject get() {
