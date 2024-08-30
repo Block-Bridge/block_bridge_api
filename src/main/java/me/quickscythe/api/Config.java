@@ -9,7 +9,7 @@ import java.io.*;
 public class Config {
 
     private JSONObject CONFIG;
-    private final String FILE;
+    private String FILE;
     Logger logger = LoggerFactory.getLogger(Config.class);
 
     public Config(String file){
