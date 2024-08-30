@@ -1,8 +1,7 @@
-package me.quickscythe.utils.token;
+package me.quickscythe.webapp.token;
 
 import json2.JSONArray;
 import json2.JSONObject;
-import me.quickscythe.Api;
 import me.quickscythe.BlockBridgeApi;
 import spark.Request;
 

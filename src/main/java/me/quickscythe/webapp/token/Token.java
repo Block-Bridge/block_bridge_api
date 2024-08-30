@@ -1,7 +1,6 @@
-package me.quickscythe.utils.token;
+package me.quickscythe.webapp.token;
 
 import me.quickscythe.Api;
-import me.quickscythe.BlockBridgeApi;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

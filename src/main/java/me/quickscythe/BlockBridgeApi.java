@@ -4,7 +4,7 @@ import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
 import me.quickscythe.api.config.ConfigClass;
-import me.quickscythe.utils.token.TokenManager;
+import me.quickscythe.webapp.token.TokenManager;
 import me.quickscythe.webapp.WebApp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

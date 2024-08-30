@@ -1,7 +1,7 @@
 package me.quickscythe;
 
 import json2.JSONObject;
-import me.quickscythe.utils.token.TokenManager;
+import me.quickscythe.webapp.token.TokenManager;
 import me.quickscythe.webapp.WebApp;
 import org.slf4j.Logger;
 
