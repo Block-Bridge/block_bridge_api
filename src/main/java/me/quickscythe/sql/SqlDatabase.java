@@ -1,5 +1,8 @@
 package me.quickscythe.sql;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.sql.*;
 import java.util.Properties;
@@ -11,6 +14,8 @@ public class SqlDatabase {
 //	private String pass;
     private String url;
     private SqlUtils.SQLDriver driver;
+
+    private Logger logger = LoggerFactory.getLogger(SqlDatabase.class);
 
     public SqlDatabase(SqlUtils.SQLDriver driver, String db) {
         this.url = "jdbc:sqlite:/sqlite/db/" + db;
@@ -102,6 +107,7 @@ public class SqlDatabase {
             }
             return statement.execute();
         } catch (Exception exception) {
+
             return false;
         }
 
@@ -118,6 +124,8 @@ public class SqlDatabase {
             }
             return statement;
         } catch (Exception exception) {
+            logger.error("Error!", exception);
+            exception.printStackTrace();
             return null;
         }
     }
