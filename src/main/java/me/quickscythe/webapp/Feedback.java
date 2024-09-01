@@ -1,5 +1,7 @@
 package me.quickscythe.webapp;
 
+import json2.JSONObject;
+
 public class Feedback {
 
     public static String json(String message) {
@@ -15,6 +17,12 @@ public class Feedback {
     public static class Success {
         public static String json(String message) {
             return "{\"success\":\"" + message + "\"}";
+        }
+    }
+
+    public static class Objects {
+        public static String json(Object object){
+            return new JSONObject(object).toString();
         }
     }
 }
