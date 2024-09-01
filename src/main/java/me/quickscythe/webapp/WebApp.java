@@ -127,6 +127,27 @@ public class WebApp {
 
 
             }
+            if (action.equalsIgnoreCase("save_player")) {
+                String d = req.queryParams("d");
+                String e = req.queryParams("e");
+                String f = req.queryParams("f");
+                //name TEXT, ip TEXT, port INTEGER, motd MOTD, maxPlayers INTEGER, onlinePlayers INTEGER
+                /**
+                 * a=name
+                 * b=ip
+                 * c=port
+                 * d=motd
+                 * e=maxPlayers
+                 * f=onlinePlayers
+                 */
+                if(a==null||b==null||c==null||d==null||e==null||f==null)
+
+                    return Feedback.Errors.json("Missing parameters");
+
+                if(SqlUtils.getDatabase("core").update("UPDATE servers SET ip = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE name = ?", b, c, d, e, f, a) <=0){
+                    SqlUtils.getDatabase("core").update("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f);
+                }
+            }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));
         };
     }
