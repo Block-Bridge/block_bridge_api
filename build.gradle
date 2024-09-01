@@ -15,6 +15,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation("com.sparkjava:spark-core:$spark_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("mysql:mysql-connector-java:$sql_version")
 }
 
 test {
