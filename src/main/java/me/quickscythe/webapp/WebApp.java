@@ -127,7 +127,7 @@ public class WebApp {
 
 
             }
-            if (action.equalsIgnoreCase("save_player")) {
+            if (action.equalsIgnoreCase("save_server")) {
                 String d = req.queryParams("d");
                 String e = req.queryParams("e");
                 String f = req.queryParams("f");
