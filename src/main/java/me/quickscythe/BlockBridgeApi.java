@@ -32,7 +32,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
         SqlUtils.createDatabase("core", new SqlDatabase(SqlUtils.SQLDriver.SQLITE, "core.db"));
         SqlDatabase core = SqlUtils.getDatabase("core");
         core.update("CREATE TABLE IF NOT EXISTS players (uuid TEXT, username TEXT, ip TEXT, time INTEGER)");
-        core.update("CREATE TABLE IF NOT EXISTS servers (name TEXT, ip TEXT, port INTEGER, time INTEGER)");
+        core.update("CREATE TABLE IF NOT EXISTS servers (name TEXT, ip TEXT, port INTEGER, motd TEXT, onlinePlayers INTEGER, maxPlayers INTEGER)");
     }
 
     @Override
