@@ -1,5 +1,6 @@
 package me.quickscythe.sql;
 
+import java.io.File;
 import java.sql.*;
 import java.util.Properties;
 
@@ -38,6 +39,8 @@ public class SqlDatabase {
                 connection = DriverManager.getConnection( url + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", properties);
             }
             if (driver.equals(SqlUtils.SQLDriver.SQLITE)) {
+                File dbFile = new File(url.substring(12)); // Remove "jdbc:sqlite:" from the URL
+                dbFile.getParentFile().mkdirs();
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection(url);
             }
