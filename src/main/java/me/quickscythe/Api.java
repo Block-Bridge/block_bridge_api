@@ -9,15 +9,20 @@ public interface Api {
 
     void validateToken();
 
-    JSONObject getData(String path);
+    JSONObject appData(String path);
 
-    JSONObject getData(String path, boolean validate);
+    JSONObject appData(String path, boolean validate);
+
+    JSONObject apiData(String path);
 
     void allow(String ip);
     boolean isDebug();
+
     WebApp getWebApp();
     Logger getLogger();
     TokenManager getTokenManager();
+
+    void init(boolean webapp);
 
 
     int TOKEN_VALID_TIME();

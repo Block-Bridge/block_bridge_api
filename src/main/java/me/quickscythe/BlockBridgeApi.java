@@ -4,6 +4,8 @@ import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
 import me.quickscythe.api.config.ConfigClass;
+import me.quickscythe.sql.SqlDatabase;
+import me.quickscythe.sql.SqlUtils;
 import me.quickscythe.webapp.token.TokenManager;
 import me.quickscythe.webapp.WebApp;
 import org.slf4j.Logger;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class BlockBridgeApi extends ConfigClass implements Api {
@@ -26,6 +29,9 @@ public class BlockBridgeApi extends ConfigClass implements Api {
 
     public BlockBridgeApi() {
         super(new BlockBridgePlugin(), "webapp");
+        SqlUtils.createDatabase("core", new SqlDatabase(SqlUtils.SQLDriver.SQLITE, "core.db"));
+        SqlDatabase core = SqlUtils.getDatabase("core");
+        core.update("CREATE TABLE IF NOT EXISTS players (uuid TEXT, username TEXT, ip TEXT, time INTEGER)");
     }
 
     @Override
@@ -43,11 +49,11 @@ public class BlockBridgeApi extends ConfigClass implements Api {
 
     @Override
     public void validateToken() {
-        logger.info("Validating Token: " + token);
-        if (getData("check_token", false).has("error") || token == null) {
-            logger.info("Token Invalid: " + (token == null ? "Token is null" : getData("check_token", false).getString("error")));
+        logger.info("Validating Token: {}", token);
+        if (appData("check_token", false).has("error") || token == null) {
+            logger.info("Token Invalid: {}", token == null ? "Token is null" : appData("check_token", false).getString("error"));
             token = generateNewToken();
-            logger.info("New Token: " + token);
+            logger.info("New Token: {}", token);
         }
     }
 
@@ -55,7 +61,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
         try {
             logger.info("Generating new token");
             URL url = URI.create(URL() + APP_ENTRY() + "/token").toURL();
-            String result = new Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next();
+            String result = new Scanner(url.openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next();
             logger.info(result);
             return new JSONObject(result).getString("success");
         } catch (IOException | JSONException e) {
@@ -64,16 +70,26 @@ public class BlockBridgeApi extends ConfigClass implements Api {
     }
 
     @Override
-    public JSONObject getData(String path) {
-        return getData(path, true);
+    public JSONObject apiData(String path) {
+        try {
+            URL url = URI.create(URL() + API_ENTRY() + "/" + path).toURL();
+            return new JSONObject(new Scanner(url.openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public JSONObject getData(String path, boolean validate) {
+    public JSONObject appData(String path) {
+        return appData(path, true);
+    }
+
+    @Override
+    public JSONObject appData(String path, boolean validate) {
         if (validate) validateToken();
         try {
             URL url = URI.create(URL() + APP_ENTRY() + "/" + APP_VERSION() + "/" + token + "/" + path).toURL();
-            return new JSONObject(new Scanner(url.openStream(), "UTF-8").useDelimiter("\\A").next());
+            return new JSONObject(new Scanner(url.openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -8,6 +8,7 @@ import me.quickscythe.api.event.PlayerJoinEvent;
 import me.quickscythe.api.event.PlayerLeaveEvent;
 import me.quickscythe.api.event.ServerStatusChangeEvent;
 import me.quickscythe.api.listener.Listener;
+import me.quickscythe.api.object.Player;
 import me.quickscythe.webapp.token.Token;
 import spark.Route;
 
@@ -29,6 +30,7 @@ public class WebApp {
         port(bba.WEB_PORT());
         get(bba.API_ENTRY(), getNoPathError());
 
+        get(bba.API_ENTRY() + "/:action", getApiData());
 
         get(bba.APP_ENTRY(), getNoPathError());
 
@@ -39,6 +41,22 @@ public class WebApp {
         get(bba.APP_ENTRY() + "/tokens", getTokens());
 
         bba.getLogger().info("WebApp started on port {}", bba.WEB_PORT());
+    }
+
+    private Route getApiData() {
+        return (req, res) -> {
+            String action = req.params(":action");
+            if(action.equalsIgnoreCase("player_data")){
+                String a = req.queryParams("a");
+                if(a == null) return Feedback.Errors.json("No player provided");
+                return bba.apiData("player_data?a=" + a);
+            }
+            return Feedback.Errors.json("No action taken.");
+        };
+    }
+
+    public Player getPlayer(String uuid) {
+        return new Player(bba.apiData("player_data?a=" + uuid));
     }
 
     private Route getNoPathError() {
@@ -92,6 +110,7 @@ public class WebApp {
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
+
             if (action.equalsIgnoreCase("leave")) {
                 PlayerLeaveEvent e = new PlayerLeaveEvent(a, b, c);
                 for (Listener listener : getListeners())
