@@ -1,19 +1,24 @@
 package me.quickscythe.api.event;
 
+import me.quickscythe.api.object.MinecraftServer;
+import me.quickscythe.api.object.Player;
+
 public class ServerPingEvent extends Event {
-    private String from;
-    private String status;
 
-    public ServerPingEvent(String from, String status) {
-        this.from = from;
-        this.status = status;
+    private Player player;
+    private MinecraftServer server;
+
+    public ServerPingEvent(Player player, MinecraftServer server) {
+        this.player = player;
+        this.server = server;
     }
 
-    public String getFromIp() {
-        return from;
+    public Player getPlayer() {
+        return player;
     }
 
-    public String getStatus() {
-        return status;
+    public MinecraftServer getServer() {
+        return server;
     }
+
 }

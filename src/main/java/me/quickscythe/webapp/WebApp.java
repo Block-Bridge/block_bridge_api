@@ -1,5 +1,6 @@
 package me.quickscythe.webapp;
 
+import ch.qos.logback.core.model.processor.DenyAllModelFilter;
 import json2.JSONArray;
 import json2.JSONObject;
 import me.quickscythe.Api;
@@ -8,14 +9,13 @@ import me.quickscythe.api.event.PlayerJoinEvent;
 import me.quickscythe.api.event.PlayerLeaveEvent;
 import me.quickscythe.api.event.ServerStatusChangeEvent;
 import me.quickscythe.api.listener.Listener;
+import me.quickscythe.api.object.MinecraftServer;
 import me.quickscythe.api.object.Player;
+import me.quickscythe.sql.SqlUtils;
 import me.quickscythe.webapp.token.Token;
 import spark.Route;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -100,21 +100,31 @@ public class WebApp {
             String c = req.queryParams("c");
             if (action.equalsIgnoreCase("status")) {
                 if (a == null) return Feedback.Errors.json("No status provided");
-                ServerStatusChangeEvent e = new ServerStatusChangeEvent(b, a);
+                ServerStatusChangeEvent e = new ServerStatusChangeEvent(a, new MinecraftServer(bba.apiData("server_data?a=" + b)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.StatusListener)
                         ((Listener.StatusListener) listener).onStatusChange(e);
             }
             if (action.equalsIgnoreCase("join")) {
-                PlayerJoinEvent e = new PlayerJoinEvent(a, b, c);
+                PlayerJoinEvent e = new PlayerJoinEvent(getPlayer(a));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
 
             if (action.equalsIgnoreCase("leave")) {
-                PlayerLeaveEvent e = new PlayerLeaveEvent(a, b, c);
+                PlayerLeaveEvent e = new PlayerLeaveEvent(getPlayer(a));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
+
+            }
+
+            if (action.equalsIgnoreCase("save_player")) {
+                if(a==null||b==null||c==null)
+                    return Feedback.Errors.json("Missing parameters");
+                if(SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b) <=0){
+                    SqlUtils.getDatabase("core").update("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime());
+                }
+
 
             }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));

@@ -1,25 +1,15 @@
 package me.quickscythe.api.event;
 
+import me.quickscythe.api.object.Player;
+
 public class PlayerLeaveEvent extends Event {
-    private String player;
-    private String server;
-    private String uuid;
+    private Player player;
 
-    public PlayerLeaveEvent(String player, String uuid, String server) {
+    public PlayerLeaveEvent(Player player) {
         this.player = player;
-        this.server = server;
-        this.uuid = uuid;
     }
 
-    public String getPlayer() {
+    public Player getPlayer() {
         return player;
-    }
-
-    public String getServer() {
-        return server;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 }

@@ -1,25 +1,15 @@
 package me.quickscythe.api.event;
 
+import me.quickscythe.api.object.Player;
+
 public class PlayerJoinEvent extends Event {
-    private String player;
-    private String server;
-    private String uuid;
+    private Player player;
 
-    public PlayerJoinEvent(String player, String uuid, String server) {
+    public PlayerJoinEvent(Player player) {
         this.player = player;
-        this.server = server;
-        this.uuid = uuid;
     }
 
-    public String getPlayer() {
+    public Player getPlayer() {
         return player;
-    }
-
-    public String getServer() {
-        return server;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 }

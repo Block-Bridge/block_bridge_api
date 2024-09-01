@@ -1,25 +1,23 @@
 package me.quickscythe.api.event;
 
+import me.quickscythe.api.object.Player;
+
 public class PlayerChatEvent extends Event {
-    private String player;
-    private String server;
+    private Player player;
     private String message;
 
-    public PlayerChatEvent(String player, String server, String message) {
+    public PlayerChatEvent(Player player, String message) {
         this.player = player;
-        this.server = server;
         this.message = message;
     }
 
-    public String getPlayer() {
+    public Player getPlayer() {
         return player;
-    }
-
-    public String getServer() {
-        return server;
     }
 
     public String getMessage() {
         return message;
     }
+
+
 }
