@@ -15,6 +15,9 @@ public class MinecraftServer {
 
 
     public MinecraftServer(JSONObject jsonObject) {
+        this.name = jsonObject.getString("name");
+        this.ip = jsonObject.getString("ip");
+        this.port = jsonObject.getInt("port");
         this.motd = jsonObject.getString("motd");
         this.onlinePlayers = jsonObject.getInt("onlinePlayers");
         this.maxPlayers = jsonObject.getInt("maxPlayers");
