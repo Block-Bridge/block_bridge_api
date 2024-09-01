@@ -51,8 +51,9 @@ public class BlockBridgeApi extends ConfigClass implements Api {
     @Override
     public void validateToken() {
         logger.info("Validating Token: {}", token);
-        if (appData("check_token", false).has("error") || token == null) {
-            logger.info("Token Invalid: {}", token == null ? "Token is null" : appData("check_token", false).getString("error"));
+        JSONObject data = appData("check_token", false);
+        if (data.has("error") || token == null) {
+            logger.info("Token Invalid: {}", token == null ? "Token is null" : data.getString("error"));
             token = generateNewToken();
             logger.info("New Token: {}", token);
         }
