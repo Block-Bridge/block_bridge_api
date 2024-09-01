@@ -46,12 +46,11 @@ public class WebApp {
     private Route getApiData() {
         return (req, res) -> {
             String action = req.params(":action");
-            if(action.equalsIgnoreCase("player_data")){
                 String a = req.queryParams("a");
                 if(a == null) return Feedback.Errors.json("No player provided");
-                return bba.apiData("player_data?a=" + a);
-            }
-            return Feedback.Errors.json("No action taken.");
+                return bba.apiData(action + "?a=" + a);
+
+//            return Feedback.Errors.json("No action taken.");
         };
     }
 
