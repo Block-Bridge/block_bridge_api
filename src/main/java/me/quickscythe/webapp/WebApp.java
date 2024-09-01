@@ -166,7 +166,7 @@ public class WebApp {
                 int result = SqlUtils.getDatabase("core").update("UPDATE servers SET ip = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE name = ?", b, c, d, e, f, a);
                 bba.getLogger().info("Result: {}", result);
                 if(result <=0){
-                    SqlUtils.getDatabase("core").update("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f);
+                    bba.getLogger().info("Result2: {}", SqlUtils.getDatabase("core").update("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f));
                 }
             }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));
