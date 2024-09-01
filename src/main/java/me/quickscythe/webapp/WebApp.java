@@ -164,7 +164,7 @@ public class WebApp {
 
                     return Feedback.Errors.json("Missing parameters");
 
-                if(SqlUtils.getDatabase("core").update("UPDATE servers SET ip = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE name = ?", b, c, d, e, f, a) <=0){
+                if(SqlUtils.getDatabase("core").update("UPDATE servers SET ip = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE name = ?", b, c, d, e, f, a) >=0){
                     SqlUtils.getDatabase("core").update("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f);
                 }
             }
