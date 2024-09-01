@@ -151,7 +151,7 @@ public class WebApp {
                 String d = req.queryParams("d");
                 String e = req.queryParams("e");
                 String f = req.queryParams("f");
-                //name TEXT, ip TEXT, port INTEGER, motd MOTD, maxPlayers INTEGER, onlinePlayers INTEGER
+                //name TEXT, ip TEXT, port INTEGER, motd TEXT, maxPlayers INTEGER, onlinePlayers INTEGER
                 /**
                  * a=name
                  * b=ip
@@ -166,7 +166,7 @@ public class WebApp {
                 int result = SqlUtils.getDatabase("core").update("UPDATE servers SET ip = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE name = ?", b, c, d, e, f, a);
                 bba.getLogger().info("Result: {}", result);
                 if(result <=0){
-                    bba.getLogger().info("Result2: {}", SqlUtils.getDatabase("core").update("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f));
+                    bba.getLogger().info("Result2: {}", SqlUtils.getDatabase("core").input("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, b, c, d, e, f));
                 }
             }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));
