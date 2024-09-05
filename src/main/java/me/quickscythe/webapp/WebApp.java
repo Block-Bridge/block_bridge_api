@@ -166,13 +166,13 @@ public class WebApp {
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
             if (action.equalsIgnoreCase("join")) {
-                PlayerJoinEvent e = new PlayerJoinEvent(getPlayer(a));
+                PlayerJoinEvent e = new PlayerJoinEvent(getPlayer(b));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
 
             if (action.equalsIgnoreCase("leave")) {
-                PlayerLeaveEvent e = new PlayerLeaveEvent(getPlayer(a));
+                PlayerLeaveEvent e = new PlayerLeaveEvent(getPlayer(b));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
 
