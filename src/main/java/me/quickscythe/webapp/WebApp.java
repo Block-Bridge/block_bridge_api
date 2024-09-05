@@ -1,6 +1,5 @@
 package me.quickscythe.webapp;
 
-import ch.qos.logback.core.model.processor.DenyAllModelFilter;
 import json2.JSONArray;
 import json2.JSONObject;
 import me.quickscythe.Api;
@@ -48,29 +47,29 @@ public class WebApp {
     private Route getApiData() {
         return (req, res) -> {
             String action = req.params(":action");
-                String a = req.queryParams("a");
-                if(a == null) return Feedback.Errors.json("No perimeter provided");
-            if(action.equalsIgnoreCase("server_data")){
-                ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE name = ?", a);
+            String a = req.queryParams("a");
+            if (a == null) return Feedback.Errors.json("No perimeter provided");
+            if (action.equalsIgnoreCase("server_data")) {
+                ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
                 try {
-                    if(rs.next())
+                    if (rs.next())
                         return Feedback.Objects.json(new MinecraftServer(bba.apiData("server_data?a=" + rs.getString("ip"))));
-                } catch (SQLException ex){
+                } catch (SQLException ex) {
                     return Feedback.Errors.json("Error getting server data");
                 }
             }
 
-            if(action.equalsIgnoreCase("player_data")){
+            if (action.equalsIgnoreCase("player_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM players WHERE uuid = ?", a);
                 try {
-                    if(rs.next())
+                    if (rs.next())
                         return Feedback.Objects.json(new MinecraftServer(bba.apiData("player_data?a=" + rs.getString("uuid"))));
-                } catch (SQLException ex){
+                } catch (SQLException ex) {
                     return Feedback.Errors.json("Error getting server data");
                 }
             }
 
-                return Feedback.Errors.json("No action taken.");
+            return Feedback.Errors.json("No action taken.");
 //            return Feedback.Errors.json("No action taken.");
         };
     }
@@ -91,7 +90,7 @@ public class WebApp {
     }
 
     private Route getToken() {
-        return (req, res) ->{
+        return (req, res) -> {
             res.type("application/json");
             String token = bba.getTokenManager().requestNewToken(req.ip());
             return token == null ? Feedback.Errors.json("Error generating token. IP Not allowed?") : Feedback.Success.json(token);
@@ -129,18 +128,18 @@ public class WebApp {
                     if (listener instanceof Listener.StatusListener)
                         ((Listener.StatusListener) listener).onStatusChange(e);
             }
-            if(action.equalsIgnoreCase("ping")){
-                if(a==null||b==null)
+            if (action.equalsIgnoreCase("ping")) {
+                if (a == null || b == null)
                     return Feedback.Errors.json("No server provided");
                 /*
-                    * a=server
-                    * b=ip
+                 * a=server
+                 * b=ip
                  */
                 bba.getLogger().info("Ping to {} from {}", a, b);
 
             }
-            if(action.equalsIgnoreCase("chat")){
-                if(a==null||b==null||c==null)
+            if (action.equalsIgnoreCase("chat")) {
+                if (a == null || b == null || c == null)
                     return Feedback.Errors.json("Missing parameters");
                 /*
                  * a=uuid
@@ -164,15 +163,15 @@ public class WebApp {
             }
 
             if (action.equalsIgnoreCase("save_player")) {
-                if(a==null||b==null||c==null)
+                if (a == null || b == null || c == null)
                     return Feedback.Errors.json("Missing parameters");
                 /*
                  * a=username
                  * b=uuid
                  * c=ip
                  */
-                if(SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b) <=0){
-                    SqlUtils.getDatabase("core").update("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime());
+                if (SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b) <= 0) {
+                    SqlUtils.getDatabase("core").input("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime());
                 }
 
 
@@ -187,12 +186,12 @@ public class WebApp {
                  * d=maxPlayers
                  * e=onlinePlayers
                  */
-                if(a==null||b==null||c==null||d==null||e==null)
+                if (a == null || b == null || c == null || d == null || e == null)
                     return Feedback.Errors.json("Missing parameters");
                 String ip = req.ip();
                 int result = SqlUtils.getDatabase("core").update("UPDATE servers SET name = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE ip = ?", a, b, c, d, e, ip);
                 bba.getLogger().info("Result: {}", result);
-                if(result <=0){
+                if (result <= 0) {
                     bba.getLogger().info("Result2: {}", SqlUtils.getDatabase("core").input("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, ip, b, c, d, e));
                 }
             }
