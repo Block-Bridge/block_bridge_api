@@ -186,8 +186,10 @@ public class WebApp {
                  * b=uuid
                  * c=ip
                  */
-                if (SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b) <= 0) {
-                    SqlUtils.getDatabase("core").input("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime());
+                int result = SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b);
+                bba.getLogger().info("Result 1: {}", result);
+                if (result <= 0) {
+                    bba.getLogger().info("Result 2: {}", SqlUtils.getDatabase("core").input("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime()));
                 }
 
 
