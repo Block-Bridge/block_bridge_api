@@ -94,9 +94,7 @@ public class WebApp {
 //        return new JSONObject().put("name", rs.getString("name")).put("ip", rs.getString("ip")).put("port", rs.getInt("port")).put("motd", rs.getString("motd")).put("maxPlayers", rs.getInt("maxPlayers")).put("onlinePlayers", rs.getString("onlinePlayers"));
 //    }
 
-    public Player getPlayer(String uuid) {
-        return new Player(bba.apiData("player_data?a=" + uuid));
-    }
+
 
     private Route getNoPathError() {
         return (req, res) -> {
@@ -162,17 +160,18 @@ public class WebApp {
                  * b=message
                  * c=time_sent
                  */
-                Player player = getPlayer(a);
+                Player player = new Player(bba.apiData("player_data?a=" + a));
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
             if (action.equalsIgnoreCase("join")) {
-                PlayerJoinEvent e = new PlayerJoinEvent(getPlayer(b));
+                bba.getLogger().info("Searching for player: {}", b);
+                PlayerJoinEvent e = new PlayerJoinEvent(new Player(bba.apiData("player_data?a=" + b)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
 
             if (action.equalsIgnoreCase("leave")) {
-                PlayerLeaveEvent e = new PlayerLeaveEvent(getPlayer(b));
+                PlayerLeaveEvent e = new PlayerLeaveEvent(new Player(bba.apiData("player_data?a=" + b)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
 
