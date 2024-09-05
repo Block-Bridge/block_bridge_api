@@ -7,7 +7,7 @@ public class Player {
     private String uid;
 
     public Player(JSONObject data) {
-        this.name = data.getString("name");
+        this.name = data.getString("username");
         this.uid = data.getString("uid");
     }
 
