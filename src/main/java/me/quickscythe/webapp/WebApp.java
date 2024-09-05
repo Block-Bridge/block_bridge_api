@@ -50,12 +50,12 @@ public class WebApp {
             String action = req.params(":action");
             String a = req.queryParams("a");
             if (a == null) return Feedback.Errors.json("No perimeter provided");
-            if(a.equalsIgnoreCase("this"))
+            if (a.equalsIgnoreCase("this"))
                 a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
                 try {
-                    if (rs.next()){
+                    if (rs.next()) {
                         JSONObject data = new JSONObject();
                         data.put("name", rs.getString("name"));
                         data.put("ip", rs.getString("ip"));
@@ -73,7 +73,7 @@ public class WebApp {
             if (action.equalsIgnoreCase("player_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM players WHERE uuid = ?", a);
                 try {
-                    if (rs.next()){
+                    if (rs.next()) {
                         JSONObject data = new JSONObject();
                         data.put("uuid", rs.getString("uuid"));
                         data.put("username", rs.getString("username"));
@@ -93,7 +93,6 @@ public class WebApp {
 //    private JSONObject generateServerFromResultSet(ResultSet rs) throws SQLException {
 //        return new JSONObject().put("name", rs.getString("name")).put("ip", rs.getString("ip")).put("port", rs.getInt("port")).put("motd", rs.getString("motd")).put("maxPlayers", rs.getInt("maxPlayers")).put("onlinePlayers", rs.getString("onlinePlayers"));
 //    }
-
 
 
     private Route getNoPathError() {
@@ -164,13 +163,19 @@ public class WebApp {
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
             if (action.equalsIgnoreCase("join")) {
+                /*
+                 * a=uuid
+                 */
                 bba.getLogger().info("Searching for player: {}", b);
-                PlayerJoinEvent e = new PlayerJoinEvent(new Player(bba.apiData("player_data?a=" + b)));
+                PlayerJoinEvent e = new PlayerJoinEvent(new Player(bba.apiData("player_data?a=" + a)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
 
             if (action.equalsIgnoreCase("leave")) {
+                /*
+                 * a=uuid
+                 */
                 PlayerLeaveEvent e = new PlayerLeaveEvent(new Player(bba.apiData("player_data?a=" + b)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
