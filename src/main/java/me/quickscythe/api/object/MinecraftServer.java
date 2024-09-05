@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 
 public class MinecraftServer {
 
-    private String name;
-    private String ip;
-    private int port;
-    private String motd;
-    private int onlinePlayers;
-    private int maxPlayers;
+    private final String name;
+    private final String ip;
+    private final int port;
+    private final String motd;
+    private final int onlinePlayers;
+    private final int maxPlayers;
 
 
     public MinecraftServer(JSONObject jsonObject) {
@@ -24,19 +24,19 @@ public class MinecraftServer {
 
     }
 
-    public MinecraftServer(ResultSet rs) {
-
-        try {
-            this.name = rs.getString("name");
-            this.ip = rs.getString("ip");
-            this.port = rs.getInt("port");
-            this.motd = rs.getString("motd");
-            this.onlinePlayers = rs.getInt("onlinePlayers");
-            this.maxPlayers = rs.getInt("maxPlayers");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public MinecraftServer(ResultSet rs) {
+//
+//        try {
+//            this.name = rs.getString("name");
+//            this.ip = rs.getString("ip");
+//            this.port = rs.getInt("port");
+//            this.motd = rs.getString("motd");
+//            this.onlinePlayers = rs.getInt("onlinePlayers");
+//            this.maxPlayers = rs.getInt("maxPlayers");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public String getMotd() {
         return motd;

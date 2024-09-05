@@ -1,8 +1,6 @@
 package me.quickscythe.api.listener;
 
-import me.quickscythe.api.event.PlayerJoinEvent;
-import me.quickscythe.api.event.PlayerLeaveEvent;
-import me.quickscythe.api.event.ServerStatusChangeEvent;
+import me.quickscythe.api.event.*;
 
 public interface Listener {
 
@@ -16,5 +14,11 @@ public interface Listener {
 
     interface StatusListener extends Listener {
         void onStatusChange(ServerStatusChangeEvent event);
+    }
+    interface ChatListener extends Listener {
+        void onPlayerChat(PlayerChatEvent event);
+    }
+    interface PingListener extends Listener {
+        void onPing(ServerPingEvent event);
     }
 }
