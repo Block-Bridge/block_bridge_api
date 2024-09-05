@@ -50,6 +50,8 @@ public class WebApp {
             String action = req.params(":action");
             String a = req.queryParams("a");
             if (a == null) return Feedback.Errors.json("No perimeter provided");
+            if(a.equalsIgnoreCase("this"))
+                a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
                 try {
