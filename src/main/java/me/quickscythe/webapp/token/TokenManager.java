@@ -29,7 +29,7 @@ public class TokenManager {
                 break;
             }
         }
-        if (allowed) {
+        if (allowed || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1")) {
             String token = UUID.randomUUID().toString();
             while (TOKENS.containsKey(token)) token = UUID.randomUUID().toString();
             TOKENS.put(token, new Token(token, ip, bba));
