@@ -46,6 +46,7 @@ public class WebApp {
 
     private Route getApiData() {
         return (req, res) -> {
+            res.type("application/json");
             String action = req.params(":action");
             String a = req.queryParams("a");
             if (a == null) return Feedback.Errors.json("No perimeter provided");
