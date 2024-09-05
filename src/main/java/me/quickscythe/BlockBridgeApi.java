@@ -6,8 +6,8 @@ import json2.JSONObject;
 import me.quickscythe.api.config.ConfigClass;
 import me.quickscythe.sql.SqlDatabase;
 import me.quickscythe.sql.SqlUtils;
-import me.quickscythe.webapp.token.TokenManager;
 import me.quickscythe.webapp.WebApp;
+import me.quickscythe.webapp.token.TokenManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
     public void init(boolean webapp) {
         checkConfigDefaults();
         getConfig().save();
-        if (webapp)
-            WEB_APP = new WebApp(this);
+        if (webapp) WEB_APP = new WebApp(this);
     }
 
     @Override
@@ -91,7 +90,11 @@ public class BlockBridgeApi extends ConfigClass implements Api {
         if (validate) validateToken();
         try {
             URL url = URI.create(URL() + APP_ENTRY() + "/" + APP_VERSION() + "/" + token + "/" + path).toURL();
-            return new JSONObject(new Scanner(url.openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next());
+            try (Scanner scanner = new Scanner(url.openStream(), StandardCharsets.UTF_8)) {
+                JSONObject result = new JSONObject(scanner.useDelimiter("\\A").next());
+                scanner.close();
+                return result;
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
