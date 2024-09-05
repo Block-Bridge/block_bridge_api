@@ -52,8 +52,16 @@ public class WebApp {
             if (action.equalsIgnoreCase("server_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
                 try {
-                    if (rs.next())
-                        return Feedback.Objects.json(new MinecraftServer(bba.apiData("server_data?a=" + rs.getString("ip"))));
+                    if (rs.next()){
+                        JSONObject data = new JSONObject();
+                        data.put("name", rs.getString("name"));
+                        data.put("ip", rs.getString("ip"));
+                        data.put("port", rs.getInt("port"));
+                        data.put("motd", rs.getString("motd"));
+                        data.put("maxPlayers", rs.getInt("maxPlayers"));
+                        data.put("onlinePlayers", rs.getString("onlinePlayers"));
+                        return Feedback.Objects.json(new MinecraftServer(data));
+                    }
                 } catch (SQLException ex) {
                     return Feedback.Errors.json("Error getting server data");
                 }
@@ -62,8 +70,13 @@ public class WebApp {
             if (action.equalsIgnoreCase("player_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM players WHERE uuid = ?", a);
                 try {
-                    if (rs.next())
-                        return Feedback.Objects.json(new MinecraftServer(bba.apiData("player_data?a=" + rs.getString("uuid"))));
+                    if (rs.next()){
+                        JSONObject data = new JSONObject();
+                        data.put("uuid", rs.getString("uuid"));
+                        data.put("username", rs.getString("username"));
+
+                        return Feedback.Objects.json(new Player(data));
+                    }
                 } catch (SQLException ex) {
                     return Feedback.Errors.json("Error getting server data");
                 }
