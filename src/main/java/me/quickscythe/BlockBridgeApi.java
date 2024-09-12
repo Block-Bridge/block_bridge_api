@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -78,6 +80,36 @@ public class BlockBridgeApi extends ConfigClass implements Api {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public JSONObject postApiData(String path, JSONObject data) {
+        validateToken();
+        try {
+            URL url = URI.create(URL() + APP_ENTRY() + "/" + APP_VERSION() + "/" + token + "/" + path).toURL();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Step 3: Set the request method to POST
+            connection.setRequestMethod("POST");
+
+            // Step 4: Set the request headers
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setDoOutput(true);
+
+            // Step 5: Write the POST data to the output stream
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = data.toString().getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            // Step 6: Read the response
+            int responseCode = connection.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
     @Override

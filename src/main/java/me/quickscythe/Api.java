@@ -15,6 +15,8 @@ public interface Api {
 
     JSONObject apiData(String path);
 
+    JSONObject postApiData(String path, JSONObject data);
+
     void allow(String ip);
     boolean isDebug();
 
