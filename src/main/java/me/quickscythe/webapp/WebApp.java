@@ -18,8 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static spark.Spark.get;
-import static spark.Spark.port;
+import static spark.Spark.*;
 
 public class WebApp {
 
@@ -41,7 +40,26 @@ public class WebApp {
 
         get(bba.APP_ENTRY() + "/tokens", getTokens());
 
+        post(bba.APP_ENTRY() + "/v1/:token/:action", getPostAction());
+
         bba.getLogger().info("WebApp started on port {}", bba.WEB_PORT());
+    }
+
+    private Route getPostAction() {
+        return (req, res) -> {
+            res.type("application/json");
+            if (!bba.getTokenManager().validToken(bba.getTokenManager().getToken(req.params(":token")), req))
+                return Feedback.Errors.json("Invalid token. IP match: " + (bba.getTokenManager().getToken(req.params(":token")) != null ? bba.getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
+            Token token = bba.getTokenManager().getToken(req.params(":token"));
+            String action = req.params(":action");
+            if (action.equalsIgnoreCase("send_message")){
+                String message = req.queryParams("message");
+                return Feedback.Success.json("Message sent: " + message);
+            }
+
+
+            return Feedback.Errors.json("No action taken.");
+        };
     }
 
     private Route getApiData() {
@@ -50,8 +68,7 @@ public class WebApp {
             String action = req.params(":action");
             String a = req.queryParams("a");
             if (a == null) return Feedback.Errors.json("No perimeter provided");
-            if (a.equalsIgnoreCase("this"))
-                a = a.equalsIgnoreCase("this") ? req.ip() : a;
+            if (a.equalsIgnoreCase("this")) a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
                 ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
                 try {
@@ -142,8 +159,7 @@ public class WebApp {
                         ((Listener.StatusListener) listener).onStatusChange(e);
             }
             if (action.equalsIgnoreCase("ping")) {
-                if (a == null || b == null)
-                    return Feedback.Errors.json("No server provided");
+                if (a == null || b == null) return Feedback.Errors.json("No server provided");
                 /*
                  * a=server
                  * b=ip
@@ -152,8 +168,7 @@ public class WebApp {
 
             }
             if (action.equalsIgnoreCase("chat")) {
-                if (a == null || b == null || c == null)
-                    return Feedback.Errors.json("Missing parameters");
+                if (a == null || b == null || c == null) return Feedback.Errors.json("Missing parameters");
                 /*
                  * a=uuid
                  * b=message
@@ -183,8 +198,7 @@ public class WebApp {
             }
 
             if (action.equalsIgnoreCase("save_player")) {
-                if (a == null || b == null || c == null)
-                    return Feedback.Errors.json("Missing parameters");
+                if (a == null || b == null || c == null) return Feedback.Errors.json("Missing parameters");
                 /*
                  * a=username
                  * b=uuid
