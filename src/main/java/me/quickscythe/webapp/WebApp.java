@@ -53,6 +53,7 @@ public class WebApp {
             Token token = bba.getTokenManager().getToken(req.params(":token"));
             String action = req.params(":action");
             if (action.equalsIgnoreCase("send_message")){
+                bba.getLogger().info(req.body());
                 String message = req.queryParams("message");
                 return Feedback.Success.json("Message sent: " + message);
             }
