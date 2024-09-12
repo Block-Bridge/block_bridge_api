@@ -4,9 +4,10 @@ import json2.JSONArray;
 import json2.JSONObject;
 import me.quickscythe.Api;
 import me.quickscythe.api.BotPlugin;
-import me.quickscythe.api.event.PlayerJoinEvent;
-import me.quickscythe.api.event.PlayerLeaveEvent;
-import me.quickscythe.api.event.ServerStatusChangeEvent;
+import me.quickscythe.api.event.api.ApiChannelMessageEvent;
+import me.quickscythe.api.event.minecraft.PlayerJoinEvent;
+import me.quickscythe.api.event.minecraft.PlayerLeaveEvent;
+import me.quickscythe.api.event.minecraft.ServerStatusChangeEvent;
 import me.quickscythe.api.listener.Listener;
 import me.quickscythe.api.object.MinecraftServer;
 import me.quickscythe.api.object.Player;
@@ -53,8 +54,11 @@ public class WebApp {
             Token token = bba.getTokenManager().getToken(req.params(":token"));
             String action = req.params(":action");
             if (action.equalsIgnoreCase("send_message")){
-                JSONObject data = new JSONObject(req.body());
-                return Feedback.Success.json("Message sent: " + data.getString("message"));
+
+                ApiChannelMessageEvent e = new ApiChannelMessageEvent(req);
+                for (Listener listener : getListeners())
+                    if (listener instanceof Listener.ApiChannelListener) ((Listener.ApiChannelListener) listener).onMessage(e);
+                return Feedback.Success.json("Message sent.");
             }
 
 

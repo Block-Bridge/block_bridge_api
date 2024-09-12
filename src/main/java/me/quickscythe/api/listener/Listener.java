@@ -1,6 +1,7 @@
 package me.quickscythe.api.listener;
 
-import me.quickscythe.api.event.*;
+import me.quickscythe.api.event.api.ApiChannelMessageEvent;
+import me.quickscythe.api.event.minecraft.*;
 
 public interface Listener {
 
@@ -20,5 +21,9 @@ public interface Listener {
     }
     interface PingListener extends Listener {
         void onPing(ServerPingEvent event);
+    }
+
+    interface ApiChannelListener extends Listener {
+        void onMessage(ApiChannelMessageEvent event);
     }
 }

@@ -1,5 +1,6 @@
-package me.quickscythe.api.event;
+package me.quickscythe.api.event.minecraft;
 
+import me.quickscythe.api.event.Event;
 import me.quickscythe.api.object.MinecraftServer;
 import me.quickscythe.api.object.Player;
 
