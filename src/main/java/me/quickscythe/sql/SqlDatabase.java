@@ -48,6 +48,7 @@ public class SqlDatabase {
                 dbFile.getParentFile().mkdirs();
                 Class.forName("org.sqlite.JDBC");
                 connection = DriverManager.getConnection(url);
+                connection.createStatement().execute("PRAGMA busy_timeout = 5000");
             }
 
             if (connection != null) {
