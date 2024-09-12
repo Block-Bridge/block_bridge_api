@@ -85,7 +85,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
     }
 
     @Override
-    public JSONObject postApiData(String path, JSONObject data) {
+    public JSONObject postData(String path, JSONObject data) {
         validateToken();
         try {
             URL url = URI.create(URL() + APP_ENTRY() + "/" + APP_VERSION() + "/" + token + "/" + path).toURL();

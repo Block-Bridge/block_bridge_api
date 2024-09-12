@@ -57,7 +57,7 @@ public class WebApp {
 
                 ApiChannelMessageEvent e = new ApiChannelMessageEvent(req);
                 for (Listener listener : getListeners())
-                    if (listener instanceof Listener.ApiChannelListener) ((Listener.ApiChannelListener) listener).onMessage(e);
+                    if (listener instanceof Listener.ApiChannelListener apilistener) apilistener.onMessage(e);
                 return Feedback.Success.json("Message sent.");
             }
 
