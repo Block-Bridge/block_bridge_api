@@ -11,7 +11,9 @@ import me.quickscythe.webapp.token.TokenManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -106,6 +108,14 @@ public class BlockBridgeApi extends ConfigClass implements Api {
             // Step 6: Read the response
             int responseCode = connection.getResponseCode();
             System.out.println("Response Code: " + responseCode);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                System.out.println("Response Body: " + response.toString());
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
