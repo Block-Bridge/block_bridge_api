@@ -74,7 +74,7 @@ public class WebApp {
             if (a.equalsIgnoreCase("this")) a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
                 Storage storage = StorageManager.getStorage();
-                if(storage.get("servers." + a) == null) return Feedback.Errors.json("Server not found");
+                if(storage.get("servers." + a.replaceAll("\\.", "_")) == null) return Feedback.Errors.json("Server not found");
                 return Feedback.Objects.json(new MinecraftServer((JSONObject) storage.get("servers." + a)));
             }
 
@@ -197,6 +197,7 @@ public class WebApp {
                 storage.set("players." + b + ".username", a);
                 storage.set("players." + b + ".ip", c);
                 storage.set("players." + b + ".time", new Date().getTime());
+                storage.set("players." + b + ".uuid", b);
                 storage.save();
 
 
@@ -215,12 +216,14 @@ public class WebApp {
                 if (a == null || b == null || c == null || d == null || e == null)
                     return Feedback.Errors.json("Missing parameters");
                 String ip = req.ip();
+                String key = ip.replaceAll("\\.", "_");
                 Storage storage = StorageManager.getStorage();
-                storage.set("servers." + ip + ".name", a);
-                storage.set("servers." + ip + ".port", b);
-                storage.set("servers." + ip + ".motd", c);
-                storage.set("servers." + ip + ".maxPlayers", d);
-                storage.set("servers." + ip + ".onlinePlayers", e);
+                storage.set("servers." + key + ".name", a);
+                storage.set("servers." + key + ".port", b);
+                storage.set("servers." + key + ".motd", c);
+                storage.set("servers." + key + ".maxPlayers", d);
+                storage.set("servers." + key + ".onlinePlayers", e);
+                storage.set("servers." + key + ".ip", ip);
                 storage.save();
 
 
