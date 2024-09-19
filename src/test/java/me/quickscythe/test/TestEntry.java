@@ -1,5 +1,6 @@
-package me.quickscythe;
+package me.quickscythe.test;
 
+import me.quickscythe.BlockBridgeApi;
 import me.quickscythe.storage.StorageManager;
 import me.quickscythe.webapp.WebApp;
 

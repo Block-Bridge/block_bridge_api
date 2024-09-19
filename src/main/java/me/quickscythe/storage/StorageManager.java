@@ -7,7 +7,7 @@ public class StorageManager {
 
     private static Storage storage;
 
-    public void init(Api api){
+    public static void init(Api api){
         storage = new Storage(api);
     }
 

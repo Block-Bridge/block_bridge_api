@@ -4,6 +4,7 @@ import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
 import me.quickscythe.api.config.ConfigClass;
+import me.quickscythe.storage.Storage;
 import me.quickscythe.storage.StorageManager;
 import me.quickscythe.webapp.WebApp;
 import me.quickscythe.webapp.token.TokenManager;
@@ -32,6 +33,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
 
     public BlockBridgeApi() {
         super(new BlockBridgePlugin(), "webapp");
+        StorageManager.init(this);
 
     }
 
