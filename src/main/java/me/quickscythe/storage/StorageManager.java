@@ -1,10 +1,15 @@
 package me.quickscythe.storage;
 
 import json2.JSONObject;
+import me.quickscythe.Api;
 
 public class StorageManager {
 
-    private static final Storage storage = new Storage();
+    private static Storage storage;
+
+    public void init(Api api){
+        storage = new Storage(api);
+    }
 
     //StorageManager.getStorage().saveData("data", "value");
 

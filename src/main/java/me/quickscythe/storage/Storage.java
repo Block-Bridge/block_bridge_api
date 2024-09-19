@@ -1,7 +1,8 @@
 package me.quickscythe.storage;
 
 import json2.JSONObject;
-import me.quickscythe.TestEntry;
+import me.quickscythe.Api;
+import me.quickscythe.BlockBridgeApi;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,16 +12,21 @@ public class Storage {
 
     JSONObject data = new JSONObject();
     File file = new File("BlockBridgeApi/storage.json");
+    Api api;
 
-    public Storage() {
+    public Storage(Api api) {
+        this.api = api;
         if(!file.getParentFile().exists()){
-            TestEntry.getBotApp().getLogger().info("Creating new storage directory: {}", file.getParentFile().mkdirs());
+            api.getLogger().info("Creating new storage directory: {}", file.getParentFile().mkdirs());
+//            TestEntry.getBotApp().getLogger().info("Creating new storage directory: {}", file.getParentFile().mkdirs());
         }
         if (!file.exists()) {
             try {
-                TestEntry.getBotApp().getLogger().info("Creating new storage file: {}", file.createNewFile());
+                api.getLogger().info("Creating new storage file: {}", file.createNewFile());
+//                TestEntry.getBotApp().getLogger().info("Creating new storage file: {}", file.createNewFile());
             } catch (IOException e) {
-                TestEntry.getBotApp().getLogger().error("There was an error creating {}", file.getName(), e);
+                api.getLogger().error("There was an error creating {}", file.getName(), e);
+//                TestEntry.getBotApp().getLogger().error("There was an error creating {}", file.getName(), e);
             }
         }
 
@@ -73,13 +79,13 @@ public class Storage {
     }
 
     public void save() {
-        TestEntry.getBotApp().getLogger().info("Saving {}", file.getName());
+        api.getLogger().info("Saving storage file...");
         try {
             FileWriter f2 = new FileWriter(file, false);
             f2.write(data.toString(2));
             f2.close();
         } catch (IOException e) {
-            TestEntry.getBotApp().getLogger().error("There was an error saving {}", file.getName(), e);
+            api.getLogger().error("There was an error saving {}", file.getName(), e);
         }
 
     }
