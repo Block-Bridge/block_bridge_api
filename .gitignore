@@ -15,6 +15,7 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+/.idea/dbnavigator.xml
 
 ### Eclipse ###
 .apt_generated
@@ -41,4 +42,8 @@ bin/
 ### Mac OS ###
 .DS_Store
 /config.json
-/.idea/dbnavigator.xml
+
+### Tests ###
+test/**
+
+

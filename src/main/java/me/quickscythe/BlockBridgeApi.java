@@ -4,8 +4,7 @@ import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
 import me.quickscythe.api.config.ConfigClass;
-import me.quickscythe.sql.SqlDatabase;
-import me.quickscythe.sql.SqlUtils;
+import me.quickscythe.storage.StorageManager;
 import me.quickscythe.webapp.WebApp;
 import me.quickscythe.webapp.token.TokenManager;
 import org.slf4j.Logger;
@@ -33,10 +32,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
 
     public BlockBridgeApi() {
         super(new BlockBridgePlugin(), "webapp");
-        SqlUtils.createDatabase("core", new SqlDatabase(SqlUtils.SQLDriver.SQLITE, "core.db"));
-        SqlDatabase core = SqlUtils.getDatabase("core");
-        core.update("CREATE TABLE IF NOT EXISTS players (uuid TEXT, username TEXT, ip TEXT, time INTEGER)");
-        core.update("CREATE TABLE IF NOT EXISTS servers (name TEXT, ip TEXT, port INTEGER, motd TEXT, onlinePlayers INTEGER, maxPlayers INTEGER)");
+
     }
 
     @Override
@@ -49,6 +45,11 @@ public class BlockBridgeApi extends ConfigClass implements Api {
         checkConfigDefaults();
         getConfig().save();
         if (webapp) WEB_APP = new WebApp(this);
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Shutdown hook is running...");
+            // Place your cleanup code here
+            StorageManager.getStorage().save();
+        }));
     }
 
     @Override

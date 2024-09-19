@@ -11,12 +11,11 @@ import me.quickscythe.api.event.minecraft.ServerStatusChangeEvent;
 import me.quickscythe.api.listener.Listener;
 import me.quickscythe.api.object.MinecraftServer;
 import me.quickscythe.api.object.Player;
-import me.quickscythe.sql.SqlUtils;
+import me.quickscythe.storage.Storage;
+import me.quickscythe.storage.StorageManager;
 import me.quickscythe.webapp.token.Token;
 import spark.Route;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 import static spark.Spark.*;
@@ -74,36 +73,15 @@ public class WebApp {
             if (a == null) return Feedback.Errors.json("No perimeter provided");
             if (a.equalsIgnoreCase("this")) a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
-                ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM servers WHERE ip = ?", a);
-                try {
-                    if (rs.next()) {
-                        JSONObject data = new JSONObject();
-                        data.put("name", rs.getString("name"));
-                        data.put("ip", rs.getString("ip"));
-                        data.put("port", rs.getInt("port"));
-                        data.put("motd", rs.getString("motd"));
-                        data.put("maxPlayers", rs.getInt("maxPlayers"));
-                        data.put("onlinePlayers", rs.getString("onlinePlayers"));
-                        return Feedback.Objects.json(new MinecraftServer(data));
-                    }
-                } catch (SQLException ex) {
-                    return Feedback.Errors.json("Error getting server data");
-                }
+                Storage storage = StorageManager.getStorage();
+                if(storage.get("servers." + a) == null) return Feedback.Errors.json("Server not found");
+                return Feedback.Objects.json(new MinecraftServer((JSONObject) storage.get("servers." + a)));
             }
 
             if (action.equalsIgnoreCase("player_data")) {
-                ResultSet rs = SqlUtils.getDatabase("core").query("SELECT * FROM players WHERE uuid = ?", a);
-                try {
-                    if (rs.next()) {
-                        JSONObject data = new JSONObject();
-                        data.put("uuid", rs.getString("uuid"));
-                        data.put("username", rs.getString("username"));
-
-                        return Feedback.Objects.json(new Player(data));
-                    }
-                } catch (SQLException ex) {
-                    return Feedback.Errors.json("Error getting server data");
-                }
+                Storage storage = StorageManager.getStorage();
+                if(storage.get("players." + a) == null) return Feedback.Errors.json("Player not found");
+                return Feedback.Objects.json(new Player((JSONObject) storage.get("players." + a)));
             }
 
             return Feedback.Errors.json("No action taken.");
@@ -178,6 +156,12 @@ public class WebApp {
                  * b=message
                  * c=time_sent
                  */
+
+
+//                StorageManager.getStorage().get("test.message.1");
+//                StorageManager.getStorage().set("test.message.1", "Hello, World!"); // {"test":{"message":{"1":"Hello, World!"}}}
+//                StorageManager.getStorage().set("test.message.2", "Hello, World!"); // {"test":{"message":{"1":"Hello, World!","2":"Hello, World!"}}}
+
                 Player player = new Player(bba.apiData("player_data?a=" + a));
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
@@ -208,11 +192,13 @@ public class WebApp {
                  * b=uuid
                  * c=ip
                  */
-                int result = SqlUtils.getDatabase("core").update("UPDATE players SET username = ?, ip = ?, time = ? WHERE uuid = ?", a, c, new Date().getTime(), b);
-                bba.getLogger().info("Result 1: {}", result);
-                if (result <= 0) {
-                    bba.getLogger().info("Result 2: {}", SqlUtils.getDatabase("core").input("INSERT INTO players (uuid, username, ip, time) VALUES (?, ?, ?, ?)", b, a, c, new Date().getTime()));
-                }
+
+                Storage storage = StorageManager.getStorage();
+                storage.set("players." + b + ".username", a);
+                storage.set("players." + b + ".ip", c);
+                storage.set("players." + b + ".time", new Date().getTime());
+                storage.save();
+
 
 
             }
@@ -229,11 +215,16 @@ public class WebApp {
                 if (a == null || b == null || c == null || d == null || e == null)
                     return Feedback.Errors.json("Missing parameters");
                 String ip = req.ip();
-                int result = SqlUtils.getDatabase("core").update("UPDATE servers SET name = ?, port = ?, motd = ?, maxPlayers = ?, onlinePlayers = ? WHERE ip = ?", a, b, c, d, e, ip);
-                bba.getLogger().info("Result: {}", result);
-                if (result <= 0) {
-                    bba.getLogger().info("Result2: {}", SqlUtils.getDatabase("core").input("INSERT INTO servers (name, ip, port, motd, maxPlayers, onlinePlayers) VALUES (?, ?, ?, ?, ?, ?)", a, ip, b, c, d, e));
-                }
+                Storage storage = StorageManager.getStorage();
+                storage.set("servers." + ip + ".name", a);
+                storage.set("servers." + ip + ".port", b);
+                storage.set("servers." + ip + ".motd", c);
+                storage.set("servers." + ip + ".maxPlayers", d);
+                storage.set("servers." + ip + ".onlinePlayers", e);
+                storage.save();
+
+
+
             }
             return Feedback.Success.json("Valid token. Action: " + req.params(":action"));
         };
