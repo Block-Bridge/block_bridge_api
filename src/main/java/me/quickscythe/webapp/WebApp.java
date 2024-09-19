@@ -74,8 +74,9 @@ public class WebApp {
             if (a.equalsIgnoreCase("this")) a = a.equalsIgnoreCase("this") ? req.ip() : a;
             if (action.equalsIgnoreCase("server_data")) {
                 Storage storage = StorageManager.getStorage();
-                if(storage.get("servers." + a.replaceAll("\\.", "_")) == null) return Feedback.Errors.json("Server not found");
-                return Feedback.Objects.json(new MinecraftServer((JSONObject) storage.get("servers." + a)));
+                String key = a.replaceAll("\\.", "_");
+                if(storage.get("servers." + key) == null) return Feedback.Errors.json("Server not found");
+                return Feedback.Objects.json(new MinecraftServer((JSONObject) storage.get("servers." + key)));
             }
 
             if (action.equalsIgnoreCase("player_data")) {
