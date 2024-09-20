@@ -7,6 +7,7 @@ import me.quickscythe.BlockBridgeApi;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Storage {
 
@@ -28,6 +29,17 @@ public class Storage {
                 api.getLogger().error("There was an error creating {}", file.getName(), e);
 //                TestEntry.getBotApp().getLogger().error("There was an error creating {}", file.getName(), e);
             }
+        }
+        try {
+            String content = "";
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                content += scanner.nextLine();
+            }
+            scanner.close();
+            data = new JSONObject(content);
+        } catch (IOException e) {
+            api.getLogger().error("There was an error reading {}", file.getName(), e);
         }
 
     }
