@@ -17,6 +17,7 @@ public class Storage {
 
     public Storage(Api api) {
         this.api = api;
+        System.out.println("TEST");
         if(!file.getParentFile().exists()){
             api.getLogger().info("Creating new storage directory: {}", file.getParentFile().mkdirs());
 //            TestEntry.getBotApp().getLogger().info("Creating new storage directory: {}", file.getParentFile().mkdirs());
@@ -30,14 +31,20 @@ public class Storage {
 //                TestEntry.getBotApp().getLogger().error("There was an error creating {}", file.getName(), e);
             }
         }
+        System.out.println("TEST2: " +file.getPath());
+        set("test2", "test2");
+        save();
         try {
-            String content = "";
+            StringBuilder content = new StringBuilder();
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
-                content += scanner.nextLine();
+                String line = scanner.nextLine();
+                System.out.println("Reading: " + line);
+                content.append(line);
             }
             scanner.close();
-            data = new JSONObject(content);
+            System.out.println(content.toString());
+            data = new JSONObject(content.toString());
         } catch (IOException e) {
             api.getLogger().error("There was an error reading {}", file.getName(), e);
         }
