@@ -136,7 +136,7 @@ public class WebApp {
             String c = req.queryParams("c");
             if (action.equalsIgnoreCase("status")) {
                 if (a == null) return Feedback.Errors.json("No status provided");
-                ServerStatusChangeEvent e = new ServerStatusChangeEvent(a, new MinecraftServer(bba.apiData("server_data?a=" + b)));
+                ServerStatusChangeEvent e = new ServerStatusChangeEvent(a, new MinecraftServer((JSONObject) StorageManager.getStorage().get("servers." + req.ip().replaceAll("\\.", "_"))));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.StatusListener)
                         ((Listener.StatusListener) listener).onStatusChange(e);
@@ -163,7 +163,7 @@ public class WebApp {
 //                StorageManager.getStorage().set("test.message.1", "Hello, World!"); // {"test":{"message":{"1":"Hello, World!"}}}
 //                StorageManager.getStorage().set("test.message.2", "Hello, World!"); // {"test":{"message":{"1":"Hello, World!","2":"Hello, World!"}}}
 
-                Player player = new Player(bba.apiData("player_data?a=" + a));
+                Player player = new Player((JSONObject) StorageManager.getStorage().get("players." + a));
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
             if (action.equalsIgnoreCase("join")) {
@@ -171,7 +171,7 @@ public class WebApp {
                  * a=uuid
                  */
                 bba.getLogger().info("Searching for player: {}", b);
-                PlayerJoinEvent e = new PlayerJoinEvent(new Player(bba.apiData("player_data?a=" + a)));
+                PlayerJoinEvent e = new PlayerJoinEvent(new Player((JSONObject) StorageManager.getStorage().get("players." + a)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
             }
@@ -180,7 +180,7 @@ public class WebApp {
                 /*
                  * a=uuid
                  */
-                PlayerLeaveEvent e = new PlayerLeaveEvent(new Player(bba.apiData("player_data?a=" + b)));
+                PlayerLeaveEvent e = new PlayerLeaveEvent(new Player((JSONObject) StorageManager.getStorage().get("players." + a)));
                 for (Listener listener : getListeners())
                     if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
 
