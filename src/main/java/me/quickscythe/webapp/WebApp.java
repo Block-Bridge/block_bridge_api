@@ -52,7 +52,7 @@ public class WebApp {
                 return Feedback.Errors.json("Invalid token. IP match: " + (bba.getTokenManager().getToken(req.params(":token")) != null ? bba.getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
             Token token = bba.getTokenManager().getToken(req.params(":token"));
             String action = req.params(":action");
-            if (action.equalsIgnoreCase("send_message")){
+            if (action.equalsIgnoreCase("send_message")) {
 
                 ApiChannelMessageEvent e = new ApiChannelMessageEvent(req);
                 for (Listener listener : getListeners())
@@ -75,13 +75,13 @@ public class WebApp {
             if (action.equalsIgnoreCase("server_data")) {
                 Storage storage = StorageManager.getStorage();
                 String key = a.replaceAll("\\.", "_");
-                if(storage.get("servers." + key) == null) return Feedback.Errors.json("Server not found");
+                if (storage.get("servers." + key) == null) return Feedback.Errors.json("Server not found");
                 return Feedback.Objects.json(new MinecraftServer((JSONObject) storage.get("servers." + key)));
             }
 
             if (action.equalsIgnoreCase("player_data")) {
                 Storage storage = StorageManager.getStorage();
-                if(storage.get("players." + a) == null) return Feedback.Errors.json("Player not found");
+                if (storage.get("players." + a) == null) return Feedback.Errors.json("Player not found");
                 return Feedback.Objects.json(new Player((JSONObject) storage.get("players." + a)));
             }
 
@@ -166,23 +166,23 @@ public class WebApp {
                 Player player = new Player((JSONObject) StorageManager.getStorage().get("players." + a));
                 bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
-            if (action.equalsIgnoreCase("join")) {
+            if (action.equalsIgnoreCase("join") || action.equalsIgnoreCase("leave")) {
                 /*
                  * a=uuid
                  */
-                bba.getLogger().info("Searching for player: {}", b);
-                PlayerJoinEvent e = new PlayerJoinEvent(new Player((JSONObject) StorageManager.getStorage().get("players." + a)));
-                for (Listener listener : getListeners())
-                    if (listener instanceof Listener.JoinListener) ((Listener.JoinListener) listener).onJoin(e);
-            }
+                bba.getLogger().info("Searching for player: {}", a);
+                Player player = new Player((JSONObject) StorageManager.getStorage().get("players." + a));
+                if (action.equalsIgnoreCase("join")) {
+                    PlayerJoinEvent e = new PlayerJoinEvent(player);
+                    for (Listener listener : getListeners())
+                        if (listener instanceof Listener.JoinListener sub) sub.onJoin(e);
+                }
+                if (action.equalsIgnoreCase("leave")) {
+                    PlayerLeaveEvent e = new PlayerLeaveEvent(player);
+                    for (Listener listener : getListeners())
+                        if (listener instanceof Listener.LeaveListener sub) sub.onLeave(e);
+                }
 
-            if (action.equalsIgnoreCase("leave")) {
-                /*
-                 * a=uuid
-                 */
-                PlayerLeaveEvent e = new PlayerLeaveEvent(new Player((JSONObject) StorageManager.getStorage().get("players." + a)));
-                for (Listener listener : getListeners())
-                    if (listener instanceof Listener.LeaveListener) ((Listener.LeaveListener) listener).onLeave(e);
 
             }
 
@@ -200,7 +200,6 @@ public class WebApp {
                 storage.set("players." + b + ".time", new Date().getTime());
                 storage.set("players." + b + ".uuid", b);
                 storage.save();
-
 
 
             }
@@ -226,7 +225,6 @@ public class WebApp {
                 storage.set("servers." + key + ".onlinePlayers", e);
                 storage.set("servers." + key + ".ip", ip);
                 storage.save();
-
 
 
             }
