@@ -2,7 +2,6 @@ package me.quickscythe.storage;
 
 import json2.JSONObject;
 import me.quickscythe.Api;
-import me.quickscythe.BlockBridgeApi;
 
 import java.io.File;
 import java.io.FileWriter;

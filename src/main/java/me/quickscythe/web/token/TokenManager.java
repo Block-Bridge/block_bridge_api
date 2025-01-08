@@ -1,8 +1,8 @@
-package me.quickscythe.webapp.token;
+package me.quickscythe.web.token;
 
 import json2.JSONArray;
 import json2.JSONObject;
-import me.quickscythe.BlockBridgeApi;
+import me.quickscythe.Api;
 import spark.Request;
 
 import java.util.*;
@@ -10,9 +10,9 @@ import java.util.*;
 public class TokenManager {
 
     private final Map<String, Token> TOKENS = new HashMap<>();
-    private final BlockBridgeApi bba;
+    private final Api bba;
 
-    public TokenManager(BlockBridgeApi bba) {
+    public TokenManager(Api bba) {
         this.bba = bba;
     }
 

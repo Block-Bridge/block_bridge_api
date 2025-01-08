@@ -1,4 +1,4 @@
-package me.quickscythe.webapp;
+package me.quickscythe.web;
 
 import json2.JSONObject;
 

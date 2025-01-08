@@ -1,8 +1,9 @@
 package me.quickscythe;
 
 import json2.JSONObject;
-import me.quickscythe.webapp.token.TokenManager;
-import me.quickscythe.webapp.WebApp;
+import me.quickscythe.api.config.ConfigFile;
+import me.quickscythe.web.token.TokenManager;
+import me.quickscythe.web.WebApp;
 import org.slf4j.Logger;
 
 public interface Api {
@@ -26,6 +27,7 @@ public interface Api {
 
     void init(boolean webapp);
 
+    ConfigFile getConfig();
 
     int TOKEN_VALID_TIME();
     String URL();

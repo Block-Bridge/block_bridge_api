@@ -1,4 +1,4 @@
-package me.quickscythe.webapp;
+package me.quickscythe.v1.webapp;
 
 import json2.JSONArray;
 import json2.JSONObject;
@@ -13,44 +13,40 @@ import me.quickscythe.api.object.MinecraftServer;
 import me.quickscythe.api.object.Player;
 import me.quickscythe.storage.Storage;
 import me.quickscythe.storage.StorageManager;
-import me.quickscythe.webapp.token.Token;
+import me.quickscythe.web.Feedback;
+import me.quickscythe.web.WebApp;
+import me.quickscythe.web.token.Token;
 import spark.Route;
 
 import java.util.*;
 
 import static spark.Spark.*;
 
-public class WebApp {
+public class WebAppV1 extends WebApp {
 
-    private final Api bba;
-    private HashMap<Listener, BotPlugin> listeners = new HashMap<>();
+    public WebAppV1(Api api) {
+        super(api);
+    }
 
-    public WebApp(Api bba) {
-        this.bba = bba;
-        port(bba.WEB_PORT());
-        get(bba.API_ENTRY(), getNoPathError());
-
-        get(bba.API_ENTRY() + "/:action", getApiData());
-
-        get(bba.APP_ENTRY(), getNoPathError());
-
-        get(bba.APP_ENTRY() + "/v1/:token/:action", getAction());
-
-        get(bba.APP_ENTRY() + "/token", getToken());
-
-        get(bba.APP_ENTRY() + "/tokens", getTokens());
-
-        post(bba.APP_ENTRY() + "/v1/:token/:action", getPostAction());
-
-        bba.getLogger().info("WebApp started on port {}", bba.WEB_PORT());
+    @Override
+    protected void setup(){
+        super.setup();
+        get(getApi().API_ENTRY(), getNoPathError());
+        get(getApi().API_ENTRY() + "/:action", getApiData());
+        get(getApi().APP_ENTRY(), getNoPathError());
+        get(getApi().APP_ENTRY() + "/v1/:token/:action", getAction());
+        get(getApi().APP_ENTRY() + "/token", getToken());
+        get(getApi().APP_ENTRY() + "/tokens", getTokens());
+        post(getApi().APP_ENTRY() + "/v1/:token/:action", getPostAction());
+        getApi().getLogger().info("WebApp started on port {}", getApi().WEB_PORT());
     }
 
     private Route getPostAction() {
         return (req, res) -> {
             res.type("application/json");
-            if (!bba.getTokenManager().validToken(bba.getTokenManager().getToken(req.params(":token")), req))
-                return Feedback.Errors.json("Invalid token. IP match: " + (bba.getTokenManager().getToken(req.params(":token")) != null ? bba.getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
-            Token token = bba.getTokenManager().getToken(req.params(":token"));
+            if (!getApi().getTokenManager().validToken(getApi().getTokenManager().getToken(req.params(":token")), req))
+                return Feedback.Errors.json("Invalid token. IP match: " + (getApi().getTokenManager().getToken(req.params(":token")) != null ? getApi().getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
+            Token token = getApi().getTokenManager().getToken(req.params(":token"));
             String action = req.params(":action");
             if (action.equalsIgnoreCase("send_message")) {
 
@@ -105,7 +101,7 @@ public class WebApp {
     private Route getToken() {
         return (req, res) -> {
             res.type("application/json");
-            String token = bba.getTokenManager().requestNewToken(req.ip());
+            String token = getApi().getTokenManager().requestNewToken(req.ip());
             return token == null ? Feedback.Errors.json("Error generating token. IP Not allowed?") : Feedback.Success.json(token);
         };
     }
@@ -115,7 +111,7 @@ public class WebApp {
             res.type("application/json");
             JSONObject feedback = new JSONObject();
             feedback.put("tokens", new JSONArray());
-            for (String token : bba.getTokenManager().getTokens(req.ip())) {
+            for (String token : getApi().getTokenManager().getTokens(req.ip())) {
                 feedback.getJSONArray("tokens").put(token);
             }
             return feedback;
@@ -125,12 +121,12 @@ public class WebApp {
     private Route getAction() {
         return (req, res) -> {
             res.type("application/json");
-            if (!bba.getTokenManager().validToken(bba.getTokenManager().getToken(req.params(":token")), req))
-                return Feedback.Errors.json("Invalid token. IP match: " + (bba.getTokenManager().getToken(req.params(":token")) != null ? bba.getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
-            Token token = bba.getTokenManager().getToken(req.params(":token"));
+            if (!getApi().getTokenManager().validToken(getApi().getTokenManager().getToken(req.params(":token")), req))
+                return Feedback.Errors.json("Invalid token. IP match: " + (getApi().getTokenManager().getToken(req.params(":token")) != null ? getApi().getTokenManager().getToken(req.params(":token")).getIp().equals(req.ip()) : "false - No Token In DB"));
+            Token token = getApi().getTokenManager().getToken(req.params(":token"));
             String action = req.params(":action");
             if (action.equalsIgnoreCase("check_token"))
-                return bba.getTokenManager().validToken(token, req) ? Feedback.Success.json("Valid token") : Feedback.Errors.json("Invalid token");
+                return getApi().getTokenManager().validToken(token, req) ? Feedback.Success.json("Valid token") : Feedback.Errors.json("Invalid token");
             String a = req.queryParams("a");
             String b = req.queryParams("b");
             String c = req.queryParams("c");
@@ -147,7 +143,7 @@ public class WebApp {
                  * a=server
                  * b=ip
                  */
-                bba.getLogger().info("Ping to {} from {}", a, b);
+                getApi().getLogger().info("Ping to {} from {}", a, b);
 
             }
             if (action.equalsIgnoreCase("chat")) {
@@ -164,13 +160,13 @@ public class WebApp {
 //                StorageManager.getStorage().set("test.message.2", "Hello, World!"); // {"test":{"message":{"1":"Hello, World!","2":"Hello, World!"}}}
 
                 Player player = new Player((JSONObject) StorageManager.getStorage().get("players." + a));
-                bba.getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
+                getApi().getLogger().info("Chat: {} - {} - {}", player.getName(), b, c);
             }
             if (action.equalsIgnoreCase("join") || action.equalsIgnoreCase("leave")) {
                 /*
                  * a=uuid
                  */
-                bba.getLogger().info("Searching for player: {}", a);
+                getApi().getLogger().info("Searching for player: {}", a);
                 Player player = new Player((JSONObject) StorageManager.getStorage().get("players." + a));
                 if (action.equalsIgnoreCase("join")) {
                     PlayerJoinEvent e = new PlayerJoinEvent(player);
@@ -232,41 +228,16 @@ public class WebApp {
         };
     }
 
-    public void addListener(BotPlugin plugin, Listener listener) {
-        listeners.put(listener, plugin);
-    }
-
-    public Set<Listener> getListeners() {
-        return listeners.keySet();
-    }
-
-    public void removeListener(Listener listener) {
-        listeners.remove(listener);
-    }
-
-    public void removeListeners(BotPlugin plugin) {
-        List<Listener> remove = new ArrayList<>();
-        for (Listener listener : listeners.keySet()) {
-
-            if (listeners.get(listener).equals(plugin)) {
-                remove.add(listener);
-            }
-        }
-        for (Listener listener : remove) {
-            removeListener(listener);
-        }
-    }
-
     public void runTokenCheck() {
         List<String> remove_tokens = new ArrayList<>();
-        for (Token token : bba.getTokenManager().getTokens()) {
+        for (Token token : getApi().getTokenManager().getTokens()) {
             if (token.isExpired()) {
-                bba.getLogger().info("Token {} has expired.", token.getToken());
+                getApi().getLogger().info("Token {} has expired.", token.getToken());
                 remove_tokens.add(token.getToken());
             }
         }
         for (String token : remove_tokens) {
-            bba.getTokenManager().removeToken(token);
+            getApi().getTokenManager().removeToken(token);
         }
     }
 }

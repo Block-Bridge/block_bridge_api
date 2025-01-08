@@ -1,4 +1,4 @@
-package me.quickscythe.webapp.token;
+package me.quickscythe.web.token;
 
 import me.quickscythe.Api;
 

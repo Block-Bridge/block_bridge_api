@@ -1,13 +1,15 @@
-package me.quickscythe;
+package me.quickscythe.v1;
 
 import json2.JSONArray;
 import json2.JSONException;
 import json2.JSONObject;
+import me.quickscythe.Api;
+import me.quickscythe.BlockBridgePlugin;
 import me.quickscythe.api.config.ConfigClass;
-import me.quickscythe.storage.Storage;
 import me.quickscythe.storage.StorageManager;
-import me.quickscythe.webapp.WebApp;
-import me.quickscythe.webapp.token.TokenManager;
+import me.quickscythe.v1.webapp.WebAppV1;
+import me.quickscythe.web.WebApp;
+import me.quickscythe.web.token.TokenManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,17 +23,17 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-public class BlockBridgeApi extends ConfigClass implements Api {
+public class BlockBridgeApiV1 extends ConfigClass implements Api {
 
 
-    private final Logger logger = LoggerFactory.getLogger(BlockBridgeApi.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final TokenManager tokenManager = new TokenManager(this);
     private boolean DEBUG = false;
 
     private WebApp WEB_APP = null;
     private String token = null;
 
-    public BlockBridgeApi() {
+    public BlockBridgeApiV1() {
         super(new BlockBridgePlugin(), "webapp");
         StorageManager.init(this);
 
@@ -46,7 +48,7 @@ public class BlockBridgeApi extends ConfigClass implements Api {
     public void init(boolean webapp) {
         checkConfigDefaults();
         getConfig().save();
-        if (webapp) WEB_APP = new WebApp(this);
+        if (webapp) WEB_APP = new WebAppV1(this);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Shutdown hook is running...");
             // Place your cleanup code here
