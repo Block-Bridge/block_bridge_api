@@ -1,6 +1,6 @@
-package me.quickscythe.web;
+package me.quickscythe.api.web;
 
-import json2.JSONObject;
+import org.json.JSONObject;
 
 public class Feedback {
 

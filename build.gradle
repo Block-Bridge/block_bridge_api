@@ -4,23 +4,43 @@ plugins {
 }
 
 group = 'me.quickscythe'
-version = project.api_version
+version = "${api_version}-${build_status}.${build_number}"
 
 repositories {
     mavenCentral()
+
+    maven {
+        url = uri("https://repo.vanillaflux.com/repository/blockbridge/")
+    }
 }
 
 dependencies {
     testImplementation platform("org.junit:junit-bom:${junit_version}")
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "commons-io:commons-io:${apache_version}"
+
     implementation("com.sparkjava:spark-core:$spark_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("mysql:mysql-connector-java:$mysql_version")
     implementation("org.xerial:sqlite-jdbc:$sqlli_version")
+    implementation("org.json:json:$json_version")
+
+    implementation("me.quickscythe:block_bridge_core:${core_version}")
 }
 
 test {
     useJUnitPlatform()
+    def file = file("$projectDir/run/")
+    if (!file.exists()) {
+        if (file.mkdirs()) {
+            println "Directory created: ${file.path}"
+        } else {
+            println "Failed to create directory: ${file.path}"
+        }
+    } else {
+        println "Directory already exists: ${file.path}"
+    }
+    workingDir = file
 }
 publishing {
 
@@ -36,4 +56,20 @@ publishing {
             url = layout.buildDirectory.dir("repo")
         }
     }
+}
+
+tasks.register('runApi', JavaExec) {
+    mainClass = 'me.quickscythe.Main'
+    classpath = sourceSets.main.runtimeClasspath
+    def file = file("$projectDir/run/")
+    if (!file.exists()) {
+        if (file.mkdirs()) {
+            println "Directory created: ${file.path}"
+        } else {
+            println "Failed to create directory: ${file.path}"
+        }
+    } else {
+        println "Directory already exists: ${file.path}"
+    }
+    workingDir = file
 }
