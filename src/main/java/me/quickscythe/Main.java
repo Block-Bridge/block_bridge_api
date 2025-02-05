@@ -34,7 +34,11 @@ public class Main {
 
         //Set handlers
 
-        api.server().start();
+        try {
+            api.server().start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static int registerTask(Runnable task) {

@@ -58,8 +58,8 @@ public class TokenManager {
         return config.getTokens(ip);
     }
 
-    public boolean valid(Token token, Request request) {
-        return token != null && token.getIp().equals(request.ip()) && !token.isExpired();
+    public boolean valid(Token token, String ip) {
+        return token != null && token.getIp().equals(ip) && !token.isExpired();
     }
 
 

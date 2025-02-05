@@ -2,10 +2,13 @@ package me.quickscythe.api;
 
 import me.quickscythe.api.config.DefaultConfig;
 import me.quickscythe.api.config.TokenConfig;
+import me.quickscythe.api.v1.handlers.HealthReportHandler;
 import me.quickscythe.api.web.token.TokenManager;
 import me.quickscythe.blockbridge.core.BridgeIntegration;
 import me.quickscythe.blockbridge.core.config.ConfigManager;
+import me.quickscythe.blockbridge.core.server.BridgeHandler;
 import me.quickscythe.blockbridge.core.server.BridgeServer;
+import org.eclipse.jetty.servlet.DefaultServlet;
 
 import java.io.File;
 import java.util.Optional;
@@ -31,6 +34,13 @@ public abstract class BridgeApi extends BridgeIntegration {
 
         tokenManager = new TokenManager(this);
 
+
+
+
+    }
+
+    public BridgeApi api(){
+        return this;
     }
 
     public TokenManager tokens(){
